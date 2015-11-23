@@ -121,9 +121,7 @@ public class Letter {
         }
     }
     protected void addTriangle(int position, Point2D point, Point2D next, Point2D vector) {
-        point.logPoint("logd");
-        next.logPoint("logd");
-        vector.logPoint("logd");
+
         Point2D normalized = Point2D.multiply(1 / vector.length(), vector);
         Point2D rotatedU = new Point2D(normalized.y, -normalized.x);
         Point2D rotatedD = Point2D.multiply(-1, rotatedU);
@@ -137,10 +135,7 @@ public class Letter {
         Point2D p2 = Point2D.add(rotatedD, next);
         Point2D p3 = Point2D.add(rotatedU, next);
         Point2D p4 = getPreviousU(position);//Point2D.add(rotatedU, point);
-        p1.logPoint("p1logd");
-        p2.logPoint("p2logd");
-        p3.logPoint("p3logd");
-        p4.logPoint("p4logd");
+
         putTriangle(position, p1, p2, p3);
         putTriangle(position + 6, p3, p4, p1);
     }

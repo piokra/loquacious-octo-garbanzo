@@ -15,15 +15,32 @@ import java.util.ArrayList;
 public class GLLetterDrawSurface extends GLSurfaceView {
 
     private final GLLetterDrawRenderer mRenderer;
+    private final ArrayList<Point2D> mPointHistory = new ArrayList<>();
     private float mPreviousX;
     private float mPreviousY;
-    private ArrayList<Point2D> mPointHistory = new ArrayList<>();
     private boolean mDown = false;
+    private float mViewWidth = 0;
+    private float mViewHeight = 0;
     public GLLetterDrawSurface(Context context) {
         super(context);
         mRenderer = new GLLetterDrawRenderer();
         setEGLContextClientVersion(2);
         setRenderer(mRenderer);
+
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        mViewHeight = h;
+        mViewWidth = w;
+
+    }
+
+    public void clear() {
+        mRenderer.mLetters.popLetter();
+    }
+
+    public void proceed() {
 
     }
 
@@ -48,8 +65,8 @@ public class GLLetterDrawSurface extends GLSurfaceView {
                 if ((x - mPreviousX) * (x - mPreviousX) + (y - mPreviousY) * (y - mPreviousY) > 100f) {
                     mPreviousX = x;
                     mPreviousY = y;
-                    /* TODO replace with actual screen size */
-                    mPointHistory.add(new Point2D(mPreviousX / 240f - 1f, -mPreviousY / 400f + 1f));
+
+                    mPointHistory.add(new Point2D(mPreviousX / (mViewWidth / 2) - 1f, -mPreviousY / (mViewHeight / 2) + 1f));
                     mRenderer.mLetters.popLetter();
                     mRenderer.mLetters.addLetter(new Letter(0.1f, mPointHistory));
                 }
