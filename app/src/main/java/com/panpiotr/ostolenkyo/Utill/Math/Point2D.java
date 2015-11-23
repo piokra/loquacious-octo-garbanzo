@@ -1,5 +1,7 @@
 package com.panpiotr.ostolenkyo.Utill.Math;
 
+import android.util.Log;
+
 /**
  * Created by Pan Piotr on 22/11/2015.
  */
@@ -40,4 +42,8 @@ public class Point2D {
         return x * x + y * y;
     }
 
+    public void logPoint(String tag) {
+        Log.d(tag, String.valueOf(x) + " " + String.valueOf(y));
+
+    }
 }

@@ -11,12 +11,12 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class GLLetterDrawRenderer implements Renderer {
 
-    Letters mLetters = new Letters();
+    public final Letters mLetters = new Letters();
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.1f, 0, 0, 1);
-        mLetters.addLetter(new Letter(0.5f, new float[]{0f, 0f, 0.1f, 0.0f}));
+        mLetters.addLetter(new Letter(0.1f, new float[]{0f, 0f, 0.1f, 0f, 0.3f, 0.3f}));
     }
 
     @Override

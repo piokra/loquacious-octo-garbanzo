@@ -10,6 +10,7 @@ import com.panpiotr.ostolenkyo.OpenGL.Utill.ShaderUtillity;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Created by Pan Piotr on 22/11/2015.
@@ -35,7 +36,8 @@ public class Letters implements Drawable {
 
     public Letters(Letter[] letters) {
         mLetters = new ArrayList<>();
-        for (Letter let : letters) mLetters.add(let);
+        Collections.addAll(mLetters, letters);
+
         updatePoints();
     }
 
@@ -63,6 +65,10 @@ public class Letters implements Drawable {
         updatePoints();
     }
 
+    public void popLetter() {
+        if (mLetters.size() == 0) return;
+        mLetters.remove(mLetters.size() - 1);
+    }
     private void updatePoints() {
         mPoints = null;
         int size = 0;
