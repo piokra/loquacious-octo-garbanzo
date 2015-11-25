@@ -2,6 +2,7 @@ package com.panpiotr.ostolenkyo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -22,6 +23,7 @@ public class OstolenkyoMainActivity extends Activity {
         @Override
         public void onClick(View v) {
             mGLView.proceed();
+            Log.d("Helo", "hello");
         }
     };
     private View mContentView;
@@ -40,7 +42,6 @@ public class OstolenkyoMainActivity extends Activity {
         clear.setOnClickListener(clearListener);
         proceed.setOnClickListener(proceedListener);
         mContentView = mView;
-
 
     }
 

@@ -21,6 +21,8 @@ public class GLLetterDrawSurface extends GLSurfaceView {
     private boolean mDown = false;
     private float mViewWidth = 0;
     private float mViewHeight = 0;
+    private boolean mNew = true;
+
     public GLLetterDrawSurface(Context context) {
         super(context);
         mRenderer = new GLLetterDrawRenderer();
@@ -38,6 +40,7 @@ public class GLLetterDrawSurface extends GLSurfaceView {
 
     public void clear() {
         mRenderer.mLetters.popLetter();
+        mRenderer.mLetters.updatePoints();
     }
 
     public void proceed() {
@@ -57,18 +60,20 @@ public class GLLetterDrawSurface extends GLSurfaceView {
                 mDown = false;
                 mPointHistory.clear();
                 Log.d("point", "UP");
+                mNew = true;
             case MotionEvent.ACTION_MOVE:
                 float x = me.getX();
                 float y = me.getY();
                 Point2D t = new Point2D(x, y);
-                t.logPoint("point");
                 if ((x - mPreviousX) * (x - mPreviousX) + (y - mPreviousY) * (y - mPreviousY) > 100f) {
                     mPreviousX = x;
                     mPreviousY = y;
 
                     mPointHistory.add(new Point2D(mPreviousX / (mViewWidth / 2) - 1f, -mPreviousY / (mViewHeight / 2) + 1f));
-                    mRenderer.mLetters.popLetter();
+                    if (!mNew)
+                        mRenderer.mLetters.popLetter();
                     mRenderer.mLetters.addLetter(new Letter(0.1f, mPointHistory));
+                    mNew = false;
                 }
         }
         return true;
