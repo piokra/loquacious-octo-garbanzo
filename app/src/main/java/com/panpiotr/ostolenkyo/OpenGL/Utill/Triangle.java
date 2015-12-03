@@ -77,13 +77,15 @@ public class Triangle {
         return true;
     }
 
+    //this works decent enough for fine enough bitmap maybe ;=] also keep notice that i believe that its rotated clockwise pi/2
     //TODO a decent resterization
     public void resterize(Bitmap bitmap, float zeroX, float zeroY, float xPerOne, float yPerOne) {
         Pair<Point2D, Point2D> rectangle = getCircumscribedRectangle();
         int startX = (int) ((rectangle.first.x - zeroX) / xPerOne);
         int startY = (int) ((rectangle.first.y - zeroY) / yPerOne);
-        int width = (int) ((rectangle.second.x - rectangle.first.x) / xPerOne);
-        int height = (int) ((rectangle.second.y - rectangle.first.y) / yPerOne);
+        int width = (int) Math.ceil((rectangle.second.x - rectangle.first.x) / xPerOne);
+        int height = (int) Math.ceil((rectangle.second.y - rectangle.first.y) / yPerOne);
+
         for (int i = 0; i < width; i++) {
             float pointX = zeroX + i * xPerOne;
             for (int j = 0; j < height; j++) {

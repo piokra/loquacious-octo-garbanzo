@@ -12,6 +12,12 @@ import com.panpiotr.ostolenkyo.OpenGL.GLLetterDrawSurface;
 
 public class OstolenkyoMainActivity extends Activity {
 
+    private final View.OnClickListener nextLetterListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+        }
+    };
     GLLetterDrawSurface mGLView;
     private final View.OnClickListener clearListener = new View.OnClickListener() {
         @Override

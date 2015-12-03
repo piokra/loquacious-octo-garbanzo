@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.panpiotr.ostolenkyo.Bitmap;
 import com.panpiotr.ostolenkyo.Utill.Math.Point2D;
 
 import java.util.ArrayList;
@@ -44,6 +45,9 @@ public class GLLetterDrawSurface extends GLSurfaceView {
     }
 
     public void proceed() {
+        Bitmap bitmap = mRenderer.mLetters.resterize(128, 128);
+        bitmap.log("bitmap");
+        mRenderer.mLetters.clear();
 
     }
 

@@ -8,6 +8,7 @@ import com.panpiotr.ostolenkyo.Bitmap;
 import com.panpiotr.ostolenkyo.OpenGL.Utill.ByteBufferHelper;
 import com.panpiotr.ostolenkyo.OpenGL.Utill.ShaderException;
 import com.panpiotr.ostolenkyo.OpenGL.Utill.ShaderUtillity;
+import com.panpiotr.ostolenkyo.OpenGL.Utill.Triangle;
 import com.panpiotr.ostolenkyo.Utill.Math.Point2D;
 
 import java.nio.FloatBuffer;
@@ -21,7 +22,7 @@ import java.util.Collections;
 public class Letters implements Drawable {
 
     private final ArrayList<Letter> mLetters;
-    protected Pair<Point2D, Point2D> getCircumscribedRectangle
+
     int mVertexCount = 0;
     FloatBuffer mPointsBuffer = null;
     int mPositionHandle = 0;
@@ -38,20 +39,6 @@ public class Letters implements Drawable {
             "}";
     private int mProgram = 0;
     private Pair<Point2D, Point2D> mCircumscribedRectangle = null;
-
-    {
-        if (mCircumscribedRectangle != null) return mCircumscribedRectangle;
-        float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE;
-        float maxX = Float.MIN_VALUE, maxY = Float.MIN_VALUE;
-        for (int i = 0; i < mPoints / 2; i++) {
-            if (minX > mPoints[2 * i]) minX = mPoints[2 * i];
-            if (minY > mPoints[2 * i + 1]) minY = mPoints[2 * i + 1];
-            if (maxX < mPoints[2 * i]) maxX = mPoints[2 * i];
-            if (maxY < mPoints[2 * i + 1]) maxY = mPoints[2 * i + 1];
-        }
-        mCircumscribedRectangle = Pair <>(new Point2D(minX, minY), new Point2D(maxX, maxY));
-        return mCircumscribedRectangle;
-    }
 
     public Letters(Letter[] letters) {
         mLetters = new ArrayList<>();
@@ -70,6 +57,25 @@ public class Letters implements Drawable {
     public Letters() {
         mLetters = new ArrayList<>();
     }
+
+    protected Pair<Point2D, Point2D> getCircumscribedRectangle() {
+        if (mCircumscribedRectangle != null) return mCircumscribedRectangle;
+        float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE;
+        float maxX = Float.MIN_VALUE, maxY = Float.MIN_VALUE;
+        for (int i = 0; i < mPoints.length / 2; i++) {
+            if (minX > mPoints[2 * i]) minX = mPoints[2 * i];
+            if (minY > mPoints[2 * i + 1]) minY = mPoints[2 * i + 1];
+            if (maxX < mPoints[2 * i]) maxX = mPoints[2 * i];
+            if (maxY < mPoints[2 * i + 1]) maxY = mPoints[2 * i + 1];
+        }
+        mCircumscribedRectangle = new Pair<>(new Point2D(minX, minY), new Point2D(maxX, maxY));
+        return mCircumscribedRectangle;
+    }
+
+    public void clear() {
+        mLetters.clear();
+    }
+
 
     public void setFragmentShaderCode(String string) {
         mFragmentShaderCode = string;
@@ -91,6 +97,7 @@ public class Letters implements Drawable {
 
     public void updatePoints() {
         mPoints = null;
+        mCircumscribedRectangle = null;
         int size = 0;
         for (Letter letter : mLetters) {
 
@@ -145,44 +152,20 @@ public class Letters implements Drawable {
 
     public Bitmap resterize(int height, int width) {
         float[] values = new float[height * width];
-        Bitmap ret = new Bitmap(width, height, 1, values);
-        for (int i = 0; i < mPoints / 6; i++) {
-            resterizeTriangle(ret, i);
+        Bitmap ret = new Bitmap(width, height, values);
+        Pair<Point2D, Point2D> circumscribed = getCircumscribedRectangle();
+        float zeroX = circumscribed.first.x;
+        float zeroY = circumscribed.first.y;
+        float xPerOne = (circumscribed.second.x - circumscribed.first.x) / (float) width;
+        float yPerOne = (circumscribed.second.y - circumscribed.first.y) / (float) height;
+        for (int i = 0; i < mPoints.length / 6; i++) {
+            Triangle t = new Triangle(new Point2D(mPoints[6 * i], mPoints[6 * i + 1]), new Point2D(mPoints[6 * i + 2], mPoints[6 * i + 3]), new Point2D(mPoints[6 * i + 4], mPoints[6 * i + 5]));
+            t.resterize(ret, zeroX, zeroY, xPerOne, yPerOne);
         }
 
 
         return ret;
     }
 
-    protected void resterizeTriangle(Bitmap bitmap, int triangle) {
-        final float maxWidth = 2.0f;
-        final float maxHeight = 2.0f;
-        Pair<Point2D, Point2D> rectangle = getCircumscribedRectangle();
-        final float actaulWidth = rectangle.second.x - rectangle.first.x;
-        final float actualHeight = rectangle.second.y - rectangle.first.y;
-        final float diffXPerPixel = actualWidth / (float) bitmap.Width;
-        final float diffYPerPixel = actualHeight / (float) bitmap.Height;
 
-        final Point2D vertex1 = new Point2D(mPoints[6 * triangle], mPoints[6 * triangle + 1]);
-        final Point2D vertex2 = new Point2D(mPoints[6 * triangle + 2], mPoints[6 * triangle + 3]);
-        final Point2D vertex3 = new Point2D(mPoints[6 * triangle + 4], mPoints[6 * triangle + 5]);
-
-        final Point2D vec12 = Point2D.subtract(vertex2, vertex1);
-        final Point2D vec23 = Point2D.subtract(vertex3, vertex2);
-        final Point2D vec31 = Point2D.subtract(vertex1, vertex3);
-
-        //divide triangle into three ortogonal triangles
-        int firstWidth = (int) Math.abs(vec12.x / diffXPerPixel);
-        int firstStartX = (int) (Math.abs(vertex1.x - rectangle.first.x) / diffXPerPixel);
-        int firstStartY = (int) (Math.abs(vertex1.y - rectangle.first.y) / diffYPerPixel);
-        int firstDirX = (int) Math.signum(vec12.x);
-        int firstDirY = (int) Math.signum(vec12.y);
-
-    }
-
-    protected
-    protected void resterizeOrtogonalTriangle(Bitmap bitmap, Point2D first, Point2D second, Point2D third) {
-        //find left bot
-
-    }
 }
