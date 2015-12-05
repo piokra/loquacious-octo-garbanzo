@@ -10,17 +10,34 @@ public class BitmapAlgebra {
 
     }
 
-    public static void normalize(Bitmap toNormalize, float currentMax, float currentMin, float newMax, float newMin) {
+    public static float length(Bitmap bitmap) {
+        float ret = 0;
+        for (int i = 0; i < bitmap.Width; i++) {
+            for (int j = 0; j < bitmap.Height; j++) {
+                ret += (bitmap.get(i, j) * bitmap.get(i, j));
+            }
+
+        }
+        return (float) Math.sqrt(ret);
+    }
+
+    public static Bitmap normalize(Bitmap toNormalize) {
+        return multiply(1 / length(toNormalize), toNormalize);
+    }
+
+    public static Bitmap normalize(Bitmap toNormalize, float currentMax, float currentMin, float newMax, float newMin) {
+        float[] floats = new float[toNormalize.Width * toNormalize.Height];
         final float oldLength = currentMax - currentMin;
         final float newLength = newMax - newMin;
         final float ratio = oldLength / newLength;
         for (int i = 0; i < toNormalize.Width; i++) {
             for (int j = 0; j < toNormalize.Height; j++) {
                 float t = toNormalize.get(i, j);
-                t = ((t - currentMin) * ratio) + newMin;
+                floats[j + i * toNormalize.Height] = ((t - currentMin) * ratio) + newMin;
                 toNormalize.set(t, i, j);
             }
         }
+        return new Bitmap(toNormalize.Width, toNormalize.Height, floats);
     }
 
     public static float scalarProduct(Bitmap l, Bitmap r) throws BitmapAlgebraException {

@@ -19,11 +19,16 @@ public class SVM {
     }
 
 
-    float evaluateValue(Bitmap sample) {
-        return CoreFunction(sample, mVector) + mB;
+    public float evaluateValue(Bitmap sample) {
+        return mCoreFunction.evaluate(sample, mVector) + mB;
     }
 
-    float evaluateSign(Bitmap sample) {
-        return Math.signum(evaluateValue(sample));
+    public float evaluateSign(Bitmap sample) {
+        return signum(evaluateValue(sample));
+    }
+
+    public float signum(float f) {
+        if (f > 0) return 1.0f;
+        return -1.0f;
     }
 }

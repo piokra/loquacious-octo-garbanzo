@@ -27,6 +27,6 @@ public class RadialCore implements CoreFunction {
             return Float.NaN;
         }
 
-        return Math.exp(-t / (2 * sigma * sigma));
+        return (float) Math.exp(-t / (2 * mSigma * mSigma));
     }
 }

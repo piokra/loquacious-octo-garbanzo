@@ -14,6 +14,7 @@ public class DefaultFunction implements CoreFunction {
             return BitmapAlgebra.scalarProduct(l, r);
 
         } catch (BitmapAlgebraException e) {
+            e.printStackTrace();
             return Float.NaN;
         }
     }

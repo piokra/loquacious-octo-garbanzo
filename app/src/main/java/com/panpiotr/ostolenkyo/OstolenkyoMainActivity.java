@@ -12,13 +12,13 @@ import com.panpiotr.ostolenkyo.OpenGL.GLLetterDrawSurface;
 
 public class OstolenkyoMainActivity extends Activity {
 
+    GLLetterDrawSurface mGLView;
     private final View.OnClickListener nextLetterListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            mGLView.nextLetter();
         }
     };
-    GLLetterDrawSurface mGLView;
     private final View.OnClickListener clearListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -45,8 +45,11 @@ public class OstolenkyoMainActivity extends Activity {
         ll.addView(mGLView);
         Button clear = (Button) findViewById(R.id.Clear);
         Button proceed = (Button) findViewById(R.id.Proceed);
+        Button nextLetter = (Button) findViewById(R.id.Next);
+        nextLetter.setOnClickListener(nextLetterListener);
         clear.setOnClickListener(clearListener);
         proceed.setOnClickListener(proceedListener);
+
         mContentView = mView;
 
     }
